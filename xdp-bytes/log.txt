@@ -1,0 +1,16 @@
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::bpf: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/bpf.rs:106] [FEAT PROBE] BPF program name support: true
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::bpf: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/bpf.rs:109] [FEAT PROBE] BTF support: true
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::bpf: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/bpf.rs:113] [FEAT PROBE] BTF func support: true
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::bpf: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/bpf.rs:116] [FEAT PROBE] BTF global func support: true
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::bpf: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/bpf.rs:122] [FEAT PROBE] BTF var and datasec support: true
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::bpf: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/bpf.rs:128] [FEAT PROBE] BTF float support: true
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::bpf: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/bpf.rs:131] [FEAT PROBE] BTF decl_tag support: true
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::bpf: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/bpf.rs:134] [FEAT PROBE] BTF type_tag support: true
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::obj::relocation: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/obj/relocation.rs:270] relocating program xdp_bytes function xdp_bytes
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::obj::relocation: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/obj/relocation.rs:327] relocating call to callee address 64 (relocation)
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::obj::relocation: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/obj/relocation.rs:348] callee is memcpy
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::obj::relocation: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/obj/relocation.rs:270] relocating program xdp_bytes function memcpy
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::obj::relocation: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/obj/relocation.rs:363] finished relocating program xdp_bytes function memcpy
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::obj::relocation: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/obj/relocation.rs:327] relocating call to callee address 64 (relocation)
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::obj::relocation: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/obj/relocation.rs:348] callee is memcpy
+17:04:05 [0m[36m[DEBUG] [0m(1) aya::obj::relocation: [/home/vadorovsky/.cargo/registry/src/github.com-1ecc6299db9ec823/aya-0.11.0/src/obj/relocation.rs:363] finished relocating program xdp_bytes function xdp_bytes
