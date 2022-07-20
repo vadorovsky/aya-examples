@@ -1,5 +1,5 @@
-use aya::{include_bytes_aligned, Bpf};
 use aya::programs::{tc, SchedClassifier, TcAttachType};
+use aya::{include_bytes_aligned, Bpf};
 use aya_log::BpfLogger;
 use clap::Parser;
 use log::info;
