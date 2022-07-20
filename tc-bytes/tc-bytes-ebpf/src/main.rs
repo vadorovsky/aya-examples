@@ -22,6 +22,17 @@ use bindings::{ethhdr, iphdr, tcphdr};
 
 const BUF_CAPACITY: usize = 9198;
 
+const ETH_P_IP: u16 = 0x0800;
+
+const IPPROTO_TCP: u8 = 6;
+
+const ETH_HDR_LEN: usize = mem::size_of::<ethhdr>();
+const IP_HDR_LEN: usize = mem::size_of::<iphdr>();
+const TCP_HDR_LEN: usize = mem::size_of::<tcphdr>();
+const X_FORWARDED_FOR: &[u8; 15] = b"X-Forwarded-For";
+
+const MAX_IP_STR_LEN: usize = 15;
+
 #[repr(C)]
 pub struct Buf {
     pub buf: [u8; BUF_CAPACITY],
@@ -39,8 +50,6 @@ pub fn tc_bytes(ctx: SkBuffContext) -> i32 {
 }
 
 fn try_tc_bytes(ctx: SkBuffContext) -> Result<i32, i32> {
-    info!(&ctx, "received a packet");
-
     let h_proto = u16::from_be(
         ctx.load(offset_of!(ethhdr, h_proto))
             .map_err(|_| TC_ACT_PIPE)?,
@@ -68,30 +77,80 @@ fn try_tc_bytes(ctx: SkBuffContext) -> Result<i32, i32> {
         .load_bytes(offset, &mut buf.buf)
         .map_err(|_| TC_ACT_PIPE)?;
 
-    info!(&ctx, "loaded the packet");
-
-    // This annoys the verifier, we cannot check the whole packet. :(
-    // So let's rather limit it to 128 bytes, should be enough for getting
-    // HTTP headers.
-    //
-    // if let Some(_) = &buf.buf[..len]
     let len = cmp::min(len, 128);
-    if let Some(_) = &buf.buf[..len]
+    if let Some(pos) = buf.buf[..len]
         .windows(X_FORWARDED_FOR.len())
         .position(|window| window == X_FORWARDED_FOR)
     {
-        info!(&ctx, "found X-Forwarded-For header");
+        info!(&ctx, "Found X-Forwarded-For header!");
+
+        let end = cmp::min(pos + MAX_IP_STR_LEN, buf.buf.len());
+        if end > BUF_CAPACITY {
+            return Ok(TC_ACT_PIPE);
+        }
+
+        let mut ip = 0u32;
+        let mut octet = 0u8;
+        for n in 0..MAX_IP_STR_LEN {
+            let i = pos + n;
+            if i > BUF_CAPACITY {
+                return Ok(TC_ACT_PIPE);
+            }
+            let c = buf.buf[i];
+            if c >= b'0' && c <= b'9' {
+                if octet > u8::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                let prev_int = octet * 10;
+                if prev_int > u8::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                let zero = b'0';
+                if zero > u8::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                let cur_int = c - zero;
+                if cur_int > u8::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                octet = prev_int + cur_int;
+                if octet > u8::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+            } else if c == b'.' {
+                if ip > u32::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                let prev_octets = ip << 8;
+                if prev_octets > u32::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                ip = prev_octets + octet as u32;
+                if ip > u32::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                octet = 0;
+            } else {
+                if ip > u32::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                let prev_octets = ip << 8;
+                if prev_octets > u32::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                ip = prev_octets + octet as u32;
+                if ip > u32::MAX {
+                    return Ok(TC_ACT_PIPE);
+                }
+                break;
+            }
+        }
+
+        info!(&ctx, "ip: {}", ip);
     }
 
     Ok(TC_ACT_PIPE)
 }
-
-const ETH_P_IP: u16 = 0x0800;
-const ETH_HDR_LEN: usize = mem::size_of::<ethhdr>();
-const IP_HDR_LEN: usize = mem::size_of::<iphdr>();
-const IPPROTO_TCP: u8 = 6;
-const TCP_HDR_LEN: usize = mem::size_of::<tcphdr>();
-const X_FORWARDED_FOR: &[u8; 15] = b"X-Forwarded-For";
 
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {

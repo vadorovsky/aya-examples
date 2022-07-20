@@ -4,13 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-aya-bpf = { git = "https://github.com/vadorovsky/aya", branch = "skb-load-bytes" }
+aya-bpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
 aya-log-ebpf = { git = "https://github.com/aya-rs/aya-log", branch = "main" }
 memoffset = "0.6"
 tc-bytes-common = { path = "../tc-bytes-common" }
-
-[patch.'https://github.com/aya-rs/aya']
-aya-bpf = { git = "https://github.com/vadorovsky/aya", branch = "skb-load-bytes" }
 
 [[bin]]
 name = "tc-bytes"

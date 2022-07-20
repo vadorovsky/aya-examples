@@ -81,12 +81,12 @@ fn try_xdp_bytes(mut ctx: XdpContext) -> Result<u32, u32> {
     if ctx.data() > 0xffff {
         info!(&ctx, "data is too large wtf");
     }
-    let offset = 0;
+    // let offset = 128;
     // let offset = ETH_HDR_LEN + IP_HDR_LEN + TCP_HDR_LEN;
     // let offset = 0usize;
     // let offset = ctx.data() + ETH_HDR_LEN + IP_HDR_LEN + TCP_HDR_LEN;
     // info!(&ctx, "data: {}", ctx.data());
-    // let offset = ctx.data();
+    let offset = ctx.data();
     // info!(&ctx, "offset: {}", offset);
     info!(
         &ctx,
