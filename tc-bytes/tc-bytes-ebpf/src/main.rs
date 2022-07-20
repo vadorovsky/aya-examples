@@ -6,11 +6,13 @@ use core::{cmp, mem};
 use aya_bpf::{
     bindings::TC_ACT_PIPE,
     macros::{classifier, map},
-    maps::PerCpuArray,
+    maps::{HashMap, PerCpuArray},
     programs::SkBuffContext,
 };
-use aya_log_ebpf::info;
+// use aya_log_ebpf::info;
 use memoffset::offset_of;
+
+use tc_bytes_common::{find_x_forwarded_for_header, parse_ipv4_addr};
 
 #[allow(non_upper_case_globals)]
 #[allow(non_snake_case)]
@@ -20,7 +22,17 @@ mod bindings;
 
 use bindings::{ethhdr, iphdr, tcphdr};
 
-const BUF_CAPACITY: usize = 9198;
+const BUF_CAPACITY: usize = 256;
+
+const ETH_P_IP: u16 = 0x0800;
+
+const IPPROTO_TCP: u8 = 6;
+
+const ETH_HDR_LEN: usize = mem::size_of::<ethhdr>();
+const IP_HDR_LEN: usize = mem::size_of::<iphdr>();
+const TCP_HDR_LEN: usize = mem::size_of::<tcphdr>();
+
+const MAX_IP_STR_LEN: usize = 15;
 
 #[repr(C)]
 pub struct Buf {
@@ -29,6 +41,9 @@ pub struct Buf {
 
 #[map]
 pub static mut BUF: PerCpuArray<Buf> = PerCpuArray::with_max_entries(1, 0);
+
+#[map]
+pub static mut ADDRESSES: HashMap<u32, u32> = HashMap::with_max_entries(1024, 0);
 
 #[classifier(name = "tc_bytes")]
 pub fn tc_bytes(ctx: SkBuffContext) -> i32 {
@@ -39,8 +54,6 @@ pub fn tc_bytes(ctx: SkBuffContext) -> i32 {
 }
 
 fn try_tc_bytes(ctx: SkBuffContext) -> Result<i32, i32> {
-    info!(&ctx, "received a packet");
-
     let h_proto = u16::from_be(
         ctx.load(offset_of!(ethhdr, h_proto))
             .map_err(|_| TC_ACT_PIPE)?,
@@ -67,31 +80,25 @@ fn try_tc_bytes(ctx: SkBuffContext) -> Result<i32, i32> {
     let len = ctx
         .load_bytes(offset, &mut buf.buf)
         .map_err(|_| TC_ACT_PIPE)?;
+    let len = cmp::min(len, BUF_CAPACITY);
 
-    info!(&ctx, "loaded the packet");
+    let (found, pos) = find_x_forwarded_for_header(&buf.buf[..len]);
 
-    // This annoys the verifier, we cannot check the whole packet. :(
-    // So let's rather limit it to 128 bytes, should be enough for getting
-    // HTTP headers.
-    //
-    // if let Some(_) = &buf.buf[..len]
-    let len = cmp::min(len, 128);
-    if let Some(_) = &buf.buf[..len]
-        .windows(X_FORWARDED_FOR.len())
-        .position(|window| window == X_FORWARDED_FOR)
-    {
-        info!(&ctx, "found X-Forwarded-For header");
+    if !found {
+        return Ok(TC_ACT_PIPE);
     }
+
+    let end = pos + MAX_IP_STR_LEN;
+    if end >= BUF_CAPACITY {
+        return Ok(TC_ACT_PIPE);
+    }
+    let ip_buf = &buf.buf[pos..pos + MAX_IP_STR_LEN];
+    let ip = parse_ipv4_addr(ip_buf).map_err(|_| TC_ACT_PIPE)?;
+
+    unsafe { ADDRESSES.insert(&ip, &ip, 0) }.map_err(|e| e as i32)?;
 
     Ok(TC_ACT_PIPE)
 }
-
-const ETH_P_IP: u16 = 0x0800;
-const ETH_HDR_LEN: usize = mem::size_of::<ethhdr>();
-const IP_HDR_LEN: usize = mem::size_of::<iphdr>();
-const IPPROTO_TCP: u8 = 6;
-const TCP_HDR_LEN: usize = mem::size_of::<tcphdr>();
-const X_FORWARDED_FOR: &[u8; 15] = b"X-Forwarded-For";
 
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
