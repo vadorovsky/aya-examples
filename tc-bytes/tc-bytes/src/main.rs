@@ -1,6 +1,6 @@
-use aya::{include_bytes_aligned, Bpf};
 use aya::programs::{tc, SchedClassifier, TcAttachType};
-use aya_log::BpfLogger;
+use aya::{include_bytes_aligned, Bpf};
+// use aya_log::BpfLogger;
 use clap::Parser;
 use log::info;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
@@ -38,7 +38,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let mut bpf = Bpf::load(include_bytes_aligned!(
         "../../target/bpfel-unknown-none/release/tc-bytes"
     ))?;
-    BpfLogger::init(&mut bpf)?;
+    // BpfLogger::init(&mut bpf)?;
     // error adding clsact to the interface if it is already added is harmless
     // the full cleanup can be done with 'sudo tc qdisc del dev eth0 clsact'.
     let _ = tc::qdisc_add_clsact(&opt.iface);
