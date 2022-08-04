@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: tc-srcip
+  namespace: kube-system
+  labels:
+    k8s-app: tc-srcip
+spec:
+  selector:
+    matchLabels:
+      name: tc-srcip
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: tc-srcip
+    spec:
+      hostPID: true
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      volumes:
+        - name: bpffs
+          hostPath:
+            path: /sys/fs/bpf
+            type: Directory
+      containers:
+        - name: tc-srcip
+          image: docker.io/vadorovsky/tc-srcip:latest
+          imagePullPolicy: Always
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /sys/fs/bpf
+              name: bpffs
+      imagePullSecrets:
+        - name: regcred
+      tolerations:
+        - operator: Exists

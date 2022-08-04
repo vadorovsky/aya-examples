@@ -1,0 +1,2 @@
+[workspace]
+members = ["tc-srcip", "tc-srcip-common", "xtask"]
