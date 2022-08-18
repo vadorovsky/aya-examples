@@ -37,7 +37,7 @@ unsafe fn try_tc(ctx: SkBuffContext) -> Result<i32, i32> {
                 ctx.load(ETH_HDR_LEN + offset_of!(iphdr, saddr))
                     .map_err(|_| TC_ACT_OK)?,
             );
-            info!(&ctx, "source IPv4: {:ipv4}", source);
+            info!(&ctx, "source IPv4: {:ipv4}, {:x}, {:X}", source, source, source);
         }
         ETH_P_IPV6 => {
             let source = ctx
