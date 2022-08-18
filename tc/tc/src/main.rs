@@ -1,5 +1,5 @@
-use aya::{include_bytes_aligned, Bpf};
 use aya::programs::{tc, SchedClassifier, TcAttachType};
+use aya::{include_bytes_aligned, Bpf};
 use aya_log::BpfLogger;
 use clap::Parser;
 use log::info;
@@ -44,7 +44,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let _ = tc::qdisc_add_clsact(&opt.iface);
     let program: &mut SchedClassifier = bpf.program_mut("tc").unwrap().try_into()?;
     program.load()?;
-    program.attach(&opt.iface, TcAttachType::Egress)?;
+    program.attach(&opt.iface, TcAttachType::Egress, 0)?;
 
     info!("Waiting for Ctrl-C...");
     signal::ctrl_c().await?;

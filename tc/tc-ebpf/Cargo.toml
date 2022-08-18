@@ -5,9 +5,12 @@ edition = "2021"
 
 [dependencies]
 aya-bpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
-aya-log-ebpf = { git = "https://github.com/vadorovsky/aya-log", branch = "display-hint-ipv4-wip" }
+aya-log-ebpf = { git = "https://github.com/vadorovsky/aya", branch = "display-hints" }
 memoffset = "0.6"
 tc-common = { path = "../tc-common" }
+
+[patch.'https://github.com/aya-rs/aya']
+aya-bpf = { git = "https://github.com/vadorovsky/aya", branch = "display-hints" }
 
 [[bin]]
 name = "tc"

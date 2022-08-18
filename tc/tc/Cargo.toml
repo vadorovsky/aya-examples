@@ -6,7 +6,7 @@ publish = false
 
 [dependencies]
 aya = { version = ">=0.11", features=["async_tokio"] }
-aya-log = { git = "https://github.com/vadorovsky/aya-log", branch = "display-hint-ipv4-wip" }
+aya-log = { git = "https://github.com/vadorovsky/aya", branch = "display-hints" }
 tc-common = { path = "../tc-common", features=["user"] }
 anyhow = "1.0.42"
 clap = { version = "3.1", features = ["derive"] }
