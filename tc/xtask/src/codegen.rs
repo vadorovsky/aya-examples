@@ -1,10 +1,10 @@
-use aya_gen::generate::InputFile;
+use aya_tool::generate::InputFile;
 use std::{fs::File, io::Write, path::PathBuf};
 
 pub fn generate() -> Result<(), anyhow::Error> {
     let dir = PathBuf::from("tc-ebpf/src");
     let names: Vec<&str> = vec!["ethhdr", "iphdr", "ipv6hdr"];
-    let bindings = aya_gen::generate(
+    let bindings = aya_tool::generate(
         InputFile::Btf(PathBuf::from("/sys/kernel/btf/vmlinux")),
         &names,
         &[],
