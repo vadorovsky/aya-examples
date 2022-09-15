@@ -28,7 +28,7 @@ pub struct Path {
 }
 
 #[map]
-pub(crate) static mut PATH_BUF: PerCpuArray<Path> = PerCpuArray::with_max_entries(1, 0);
+pub(crate) static PATH_BUF: PerCpuArray<Path> = PerCpuArray::with_max_entries(1, 0);
 
 #[inline(always)]
 pub fn my_bpf_d_path(path: *mut path, buf: &mut [u8]) -> Result<usize, c_long> {

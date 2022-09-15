@@ -28,7 +28,7 @@ pub struct Buf {
 }
 
 #[map]
-pub static mut BUF: PerCpuArray<Buf> = PerCpuArray::with_max_entries(1, 0);
+pub static BUF: PerCpuArray<Buf> = PerCpuArray::with_max_entries(1, 0);
 
 #[xdp(name = "xdp_bytes")]
 pub fn xdp_bytes(ctx: XdpContext) -> u32 {

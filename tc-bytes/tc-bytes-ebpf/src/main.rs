@@ -40,10 +40,10 @@ pub struct Buf {
 }
 
 #[map]
-pub static mut BUF: PerCpuArray<Buf> = PerCpuArray::with_max_entries(1, 0);
+pub static BUF: PerCpuArray<Buf> = PerCpuArray::with_max_entries(1, 0);
 
 #[map]
-pub static mut ADDRESSES: HashMap<u32, u32> = HashMap::with_max_entries(1024, 0);
+pub static ADDRESSES: HashMap<u32, u32> = HashMap::with_max_entries(1024, 0);
 
 #[classifier(name = "tc_bytes")]
 pub fn tc_bytes(ctx: SkBuffContext) -> i32 {

@@ -2,4 +2,4 @@
 members = ["tc", "tc-common", "xtask"]
 
 [patch.crates-io]
-aya = { git = "https://github.com/vadorovsky/aya", branch = "display-hints" }
+aya = { git = "https://github.com/vadorovsky/aya", branch = "aya-log-macros-fix" }

@@ -18,7 +18,7 @@ pub struct Buf {
 }
 
 #[map]
-pub static mut BUF: PerCpuArray<Buf> = PerCpuArray::with_max_entries(1, 0);
+pub static BUF: PerCpuArray<Buf> = PerCpuArray::with_max_entries(1, 0);
 
 #[btf_tracepoint(name = "cgroup_mkdir")]
 pub fn cgroup_mkdir(ctx: BtfTracePointContext) -> i32 {
