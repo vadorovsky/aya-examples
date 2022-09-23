@@ -1,0 +1,19 @@
+[package]
+name = "notokio"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+aya = { git = "https://github.com/vadorovsky/aya", branch = "aya-log-tokio" }
+aya-log = { git = "https://github.com/vadorovsky/aya", branch = "aya-log-tokio" }
+ctrlc = "3.2"
+notokio-common = { path = "../notokio-common", features=["user"] }
+anyhow = "1.0.42"
+clap = { version = "3.1", features = ["derive"] }
+env_logger = "0.9"
+log = "0.4"
+
+[[bin]]
+name = "notokio"
+path = "src/main.rs"

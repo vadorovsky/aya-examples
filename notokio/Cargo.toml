@@ -1,0 +1,2 @@
+[workspace]
+members = ["notokio", "notokio-common", "xtask"]
