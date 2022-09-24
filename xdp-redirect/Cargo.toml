@@ -1,0 +1,2 @@
+[workspace]
+members = ["xdp-redirect", "xdp-redirect-common", "xtask"]
