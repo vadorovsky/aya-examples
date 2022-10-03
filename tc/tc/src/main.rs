@@ -44,7 +44,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let _ = tc::qdisc_add_clsact(&opt.iface);
     let program: &mut SchedClassifier = bpf.program_mut("tc").unwrap().try_into()?;
     program.load()?;
-    program.attach(&opt.iface, TcAttachType::Egress, 0)?;
+    program.attach(&opt.iface, TcAttachType::Egress)?;
 
     info!("Waiting for Ctrl-C...");
     signal::ctrl_c().await?;
