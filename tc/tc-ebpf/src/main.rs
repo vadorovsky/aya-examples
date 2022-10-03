@@ -3,7 +3,7 @@
 
 use core::mem;
 
-use aya_bpf::{bindings::TC_ACT_OK, macros::classifier, programs::SkBuffContext};
+use aya_bpf::{bindings::TC_ACT_OK, macros::classifier, programs::TcContext};
 use aya_log_ebpf::info;
 use memoffset::offset_of;
 
@@ -16,14 +16,14 @@ mod bindings;
 use bindings::{ethhdr, iphdr, ipv6hdr};
 
 #[classifier(name = "tc")]
-pub fn tc(ctx: SkBuffContext) -> i32 {
+pub fn tc(ctx: TcContext) -> i32 {
     match unsafe { try_tc(ctx) } {
         Ok(ret) => ret,
         Err(ret) => ret,
     }
 }
 
-unsafe fn try_tc(ctx: SkBuffContext) -> Result<i32, i32> {
+unsafe fn try_tc(ctx: TcContext) -> Result<i32, i32> {
     info!(&ctx, "received a packet");
 
     let h_proto = u16::from_be(
@@ -37,7 +37,10 @@ unsafe fn try_tc(ctx: SkBuffContext) -> Result<i32, i32> {
                 ctx.load(ETH_HDR_LEN + offset_of!(iphdr, saddr))
                     .map_err(|_| TC_ACT_OK)?,
             );
-            info!(&ctx, "source IPv4: {:ipv4}, {:x}, {:X}", source, source, source);
+            info!(
+                &ctx,
+                "source IPv4: {:ipv4}, {:x}, {:X}", source, source, source
+            );
         }
         ETH_P_IPV6 => {
             let source = ctx
