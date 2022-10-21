@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-aya-bpf = { git = "https://github.com/vadorovsky/aya", branch = "bpf-get-current-comm-u8" }
-aya-log-ebpf = { git = "https://github.com/vadorovsky/aya-log", branch = "bpf-get-current-comm-u8" }
+aya-bpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
+aya-log-ebpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
 clone-common = { path = "../clone-common" }
 
 [[bin]]
