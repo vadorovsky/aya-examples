@@ -7,6 +7,7 @@ edition = "2021"
 aya-bpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
 aya-log-ebpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
 xdp-common = { path = "../xdp-common" }
+network-types = { git = "https://github.com/vadorovsky/network-types", branch = "main" }
 
 [[bin]]
 name = "xdp"
