@@ -1,0 +1,5 @@
+[workspace]
+members = ["xdp-mac", "xdp-mac-common", "xtask"]
+
+[patch.crates-io]
+aya = { git = "https://github.com/vadorovsky/aya", branch = "aya-log-mac-addr" }
