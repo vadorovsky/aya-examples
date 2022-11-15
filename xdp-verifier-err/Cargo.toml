@@ -1,0 +1,2 @@
+[workspace]
+members = ["xdp-verifier-err", "xdp-verifier-err-common", "xtask"]
