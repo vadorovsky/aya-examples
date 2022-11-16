@@ -1,0 +1,6 @@
+{
+  "rust-analyzer.linkedProjects": [
+    "Cargo.toml",
+    "xdp-mut-u8-ebpf/Cargo.toml"
+  ]
+}
