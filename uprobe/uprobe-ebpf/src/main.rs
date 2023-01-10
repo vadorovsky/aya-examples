@@ -13,7 +13,8 @@ pub fn uprobe(ctx: ProbeContext) -> u32 {
 }
 
 fn try_uprobe(ctx: ProbeContext) -> Result<u32, u32> {
-    info!(&ctx, "wao");
+    let val: u32 = ctx.arg(0).ok_or(0u32)?;
+    info!(&ctx, "wao: {}", val);
     Ok(0)
 }
 

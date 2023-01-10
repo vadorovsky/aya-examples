@@ -1,5 +1,5 @@
-use aya::{include_bytes_aligned, Bpf};
 use aya::programs::UProbe;
+use aya::{include_bytes_aligned, Bpf};
 use aya_log::BpfLogger;
 use log::{info, warn};
 use procfs::process::Process;
@@ -7,7 +7,7 @@ use tokio::signal;
 
 #[no_mangle]
 #[inline(never)]
-pub extern "C" fn uprobed_function() {}
+pub extern "C" fn uprobed_function(_val: u32) {}
 
 fn get_base_addr() -> Result<usize, anyhow::Error> {
     let me = Process::myself()?;
@@ -50,8 +50,8 @@ async fn main() -> Result<(), anyhow::Error> {
 
     program.attach(None, offset as u64, "/proc/self/exe", None)?;
 
-    uprobed_function();
-    uprobed_function();
+    uprobed_function(69);
+    uprobed_function(420);
 
     info!("Waiting for Ctrl-C...");
     signal::ctrl_c().await?;
