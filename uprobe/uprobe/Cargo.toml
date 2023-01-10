@@ -1,0 +1,21 @@
+[package]
+name = "uprobe"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+aya = { version = ">=0.11", features=["async_tokio"] }
+aya-log = "0.1"
+uprobe-common = { path = "../uprobe-common", features=["user"] }
+anyhow = "1.0.42"
+clap = { version = "4.0", features = ["derive"] }
+env_logger = "0.10"
+libc = "0.2"
+log = "0.4"
+procfs = "0.14"
+tokio = { version = "1.23", features = ["macros", "rt", "rt-multi-thread", "net", "signal"] }
+
+[[bin]]
+name = "uprobe"
+path = "src/main.rs"
