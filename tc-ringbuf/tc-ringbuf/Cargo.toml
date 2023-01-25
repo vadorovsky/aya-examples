@@ -1,0 +1,19 @@
+[package]
+name = "tc-ringbuf"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+aya = { git = "https://github.com/vadorovsky/aya", branch = "ringbuf-integration", features=["async_tokio"] }
+aya-log = { git = "https://github.com/vadorovsky/aya", branch = "ringbuf-integration" }
+tc-ringbuf-common = { path = "../tc-ringbuf-common", features=["user"] }
+anyhow = "1.0.42"
+clap = { version = "4.0", features = ["derive"] }
+env_logger = "0.10"
+log = "0.4"
+tokio = { version = "1.23", features = ["macros", "rt", "rt-multi-thread", "net", "signal"] }
+
+[[bin]]
+name = "tc-ringbuf"
+path = "src/main.rs"

@@ -1,0 +1,5 @@
+[workspace]
+members = ["tc-ringbuf", "tc-ringbuf-common", "xtask"]
+
+[patch.crates-io]
+aya = { git = "https://github.com/vadorovsky/aya", branch = "ringbuf-integration", features = ["async_tokio"] }
