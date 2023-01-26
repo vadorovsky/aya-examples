@@ -1,0 +1,2 @@
+[workspace]
+members = ["pub-progs", "pub-progs-common", "xtask"]
