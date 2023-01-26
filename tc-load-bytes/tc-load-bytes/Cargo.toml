@@ -1,0 +1,19 @@
+[package]
+name = "tc-load-bytes"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+aya = { version = ">=0.11", features=["async_tokio"] }
+aya-log = "0.1"
+clap = { version = "4.1", features = ["derive"] }
+tc-load-bytes-common = { path = "../tc-load-bytes-common", features = ["user"] }
+anyhow = "1.0.68"
+env_logger = "0.10"
+log = "0.4"
+tokio = { version = "1.24", features = ["macros", "rt", "rt-multi-thread", "net", "signal"] }
+
+[[bin]]
+name = "tc-load-bytes"
+path = "src/main.rs"
