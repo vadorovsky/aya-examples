@@ -1,0 +1,2 @@
+[workspace]
+members = ["tc-perfbuf-simple", "tc-perfbuf-simple-common", "xtask"]
