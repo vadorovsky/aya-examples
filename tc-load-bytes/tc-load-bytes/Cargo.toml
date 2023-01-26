@@ -6,7 +6,6 @@ publish = false
 
 [dependencies]
 aya = { version = ">=0.11", features=["async_tokio"] }
-aya-log = "0.1"
 clap = { version = "4.1", features = ["derive"] }
 tc-load-bytes-common = { path = "../tc-load-bytes-common", features = ["user"] }
 anyhow = "1.0.68"

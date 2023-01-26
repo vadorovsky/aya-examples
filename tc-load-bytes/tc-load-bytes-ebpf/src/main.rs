@@ -7,7 +7,6 @@ use aya_bpf::{
     maps::PerCpuArray,
     programs::TcContext,
 };
-use aya_log_ebpf::info;
 
 use tc_load_bytes_common::{PacketBuffer, MAX_MTU};
 
@@ -23,8 +22,6 @@ pub fn tc_load_bytes(ctx: TcContext) -> i32 {
 }
 
 fn try_tc_load_bytes(ctx: TcContext) -> Result<i32, i32> {
-    info!(&ctx, "received a packet");
-
     let buf = unsafe {
         let ptr = BUF.get_ptr_mut(0).ok_or(0)?;
         &mut *ptr
