@@ -1,0 +1,2 @@
+[workspace]
+members = ["xmrig", "xmrig-common", "xtask"]
