@@ -1,0 +1,2 @@
+[workspace]
+members = ["xff-cgroup", "xff-cgroup-common", "xtask"]
