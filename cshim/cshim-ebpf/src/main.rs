@@ -18,7 +18,7 @@ extern "C" {
     fn task_struct_tgid(task: *const task_struct) -> c_int;
 }
 
-#[lsm(name = "task_alloc")]
+#[lsm(hook = "task_alloc")]
 pub fn task_alloc(ctx: LsmContext) -> i32 {
     match try_task_alloc(ctx) {
         Ok(ret) => ret,
