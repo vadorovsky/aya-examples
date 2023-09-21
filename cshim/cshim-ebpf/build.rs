@@ -11,7 +11,7 @@ fn main() {
         .arg("-target")
         .arg("bpf")
         .arg("-c")
-        .arg("-g")
+        .arg("-gdwarf-4")
         .arg("src/vmlinux_access.c")
         .arg("-o")
         .arg(format!("{out_dir}/vmlinux_access.o"))
