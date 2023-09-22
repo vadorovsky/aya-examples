@@ -1,11 +1,17 @@
 #include "vmlinux_access.h"
 
-pid_t task_struct_pid(struct task_struct *task)
+int task_struct_pid(struct task_struct *task)
 {
-	return __builtin_preserve_access_index(task->pid);
+	if (task == 0) {
+		return -1;
+	}
+	return BPF_CORE_READ(task, pid);
 }
 
-pid_t task_struct_tgid(struct task_struct *task)
+int task_struct_tgid(struct task_struct *task)
 {
-	return __builtin_preserve_access_index(task->tgid);
+	if (task == 0) {
+		return -1;
+	}
+	return BPF_CORE_READ(task, tgid);
 }

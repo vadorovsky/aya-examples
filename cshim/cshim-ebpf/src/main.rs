@@ -1,8 +1,14 @@
 #![no_std]
 #![no_main]
 
-use aya_bpf::{cty::c_int, macros::lsm, programs::LsmContext};
-use aya_log_ebpf::info;
+use aya_bpf::{
+    cty::c_int,
+    macros::{lsm, map},
+    maps::PerfEventArray,
+    programs::LsmContext,
+};
+
+use cshim_common::Event;
 
 #[allow(non_upper_case_globals)]
 #[allow(non_snake_case)]
@@ -11,6 +17,9 @@ use aya_log_ebpf::info;
 mod vmlinux;
 
 use vmlinux::task_struct;
+
+#[map]
+pub static EVENTS: PerfEventArray<Event> = PerfEventArray::with_max_entries(1024, 0);
 
 #[allow(improper_ctypes)]
 extern "C" {
@@ -30,7 +39,9 @@ fn try_task_alloc(ctx: LsmContext) -> Result<i32, i32> {
     let task: *const task_struct = unsafe { ctx.arg(0) };
     let pid = unsafe { task_struct_pid(task) };
     let tgid = unsafe { task_struct_tgid(task) };
-    info!(&ctx, "pid: {}, tgid: {}", pid, tgid);
+
+    EVENTS.output(&ctx, &Event { pid, tgid }, 0);
+
     Ok(0)
 }
 

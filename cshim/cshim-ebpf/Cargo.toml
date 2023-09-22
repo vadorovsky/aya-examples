@@ -5,8 +5,10 @@ edition = "2021"
 
 [dependencies]
 aya-bpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
-aya-log-ebpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
 cshim-common = { path = "../cshim-common" }
+
+[build-dependencies]
+anyhow = "1"
 
 [[bin]]
 name = "cshim"

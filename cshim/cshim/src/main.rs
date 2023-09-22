@@ -1,8 +1,12 @@
-use aya::{programs::Lsm, Btf};
-use aya::{include_bytes_aligned, Bpf};
-use aya_log::BpfLogger;
-use log::{info, warn};
-use tokio::signal;
+use aya::{
+    include_bytes_aligned, maps::perf::AsyncPerfEventArray, programs::Lsm, util::online_cpus, Bpf,
+    Btf,
+};
+use bytes::BytesMut;
+use log::info;
+use tokio::{signal, task};
+
+use cshim_common::Event;
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
@@ -20,14 +24,34 @@ async fn main() -> Result<(), anyhow::Error> {
     let mut bpf = Bpf::load(include_bytes_aligned!(
         "../../target/bpfel-unknown-none/release/cshim"
     ))?;
-    if let Err(e) = BpfLogger::init(&mut bpf) {
-        // This can happen if you remove all log statements from your eBPF program.
-        warn!("failed to initialize eBPF logger: {}", e);
-    }
     let btf = Btf::from_sys_fs()?;
     let program: &mut Lsm = bpf.program_mut("task_alloc").unwrap().try_into()?;
     program.load("task_alloc", &btf)?;
     program.attach()?;
+
+    let mut perf_array = AsyncPerfEventArray::try_from(bpf.take_map("EVENTS").unwrap())?;
+
+    let cpus = online_cpus()?;
+    for cpu_id in cpus {
+        let mut buf = perf_array.open(cpu_id, None)?;
+
+        task::spawn(async move {
+            let mut buffers = (0..10)
+                .map(|_| BytesMut::with_capacity(1024))
+                .collect::<Vec<_>>();
+
+            loop {
+                let events = buf.read_events(&mut buffers).await.unwrap();
+                for i in 0..events.read {
+                    let buf = &mut buffers[i];
+                    let ptr = buf.as_ptr() as *const Event;
+
+                    let data = unsafe { ptr.read_unaligned() };
+                    info!("PID: {}, TGID: {}", data.pid, data.tgid);
+                }
+            }
+        });
+    }
 
     info!("Waiting for Ctrl-C...");
     signal::ctrl_c().await?;
