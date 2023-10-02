@@ -4,7 +4,7 @@
 use aya_bpf::{macros::fentry, programs::FEntryContext, BpfContext};
 use aya_log_ebpf::info;
 
-#[fentry(name = "kernel_clone")]
+#[fentry]
 pub fn kernel_clone(ctx: FEntryContext) -> u32 {
     match unsafe { try_kernel_clone(ctx) } {
         Ok(ret) => ret,
