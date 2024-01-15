@@ -15,7 +15,7 @@ mod bindings;
 
 use bindings::{ethhdr, iphdr, ipv6hdr};
 
-#[classifier(name = "tc")]
+#[classifier]
 pub fn tc(ctx: TcContext) -> i32 {
     match unsafe { try_tc(ctx) } {
         Ok(ret) => ret,
