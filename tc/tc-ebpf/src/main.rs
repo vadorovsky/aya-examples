@@ -39,14 +39,14 @@ unsafe fn try_tc(ctx: TcContext) -> Result<i32, i32> {
             );
             info!(
                 &ctx,
-                "source IPv4: {:ipv4}, {:x}, {:X}", source, source, source
+                "source IPv4: {:i}, {:x}, {:X}", source, source, source
             );
         }
         ETH_P_IPV6 => {
             let source = ctx
                 .load::<[u8; 16]>(ETH_HDR_LEN + offset_of!(ipv6hdr, saddr))
                 .map_err(|_| TC_ACT_OK)?;
-            info!(&ctx, "source IPv6: {:ipv6}", source);
+            info!(&ctx, "source IPv6: {:i}", source);
         }
         _ => return Ok(TC_ACT_OK),
     }
