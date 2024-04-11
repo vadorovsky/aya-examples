@@ -1,0 +1,6 @@
+[build]
+target-dir = "../target/probe"
+target = "bpfel-unknown-none"
+
+[unstable]
+build-std = ["core"]

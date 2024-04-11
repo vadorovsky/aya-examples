@@ -1,0 +1,23 @@
+[package]
+name = "foobar"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+aya = { git = "https://github.com/aya-rs/aya", features = ["async_tokio"] }
+aya-log = { git = "https://github.com/aya-rs/aya" }
+foobar-common = { path = "../foobar-common", features = ["user"] }
+anyhow = "1"
+env_logger = "0.10"
+libc = "0.2"
+log = "0.4"
+tokio = { version = "1.25", features = ["macros", "rt", "rt-multi-thread", "net", "signal"] }
+
+[build-dependencies]
+anyhow = "1.0"
+xtask = { path = "../xtask" }
+
+[[bin]]
+name = "foobar"
+path = "src/main.rs"
