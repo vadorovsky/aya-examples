@@ -2,20 +2,11 @@
 #![no_main]
 
 use aya_ebpf::{macros::lsm, programs::LsmContext};
-use aya_log_ebpf::info;
+// use aya_log_ebpf::info;
 
-pub struct Foo {
-    a: i32,
-    b: i32,
-}
+mod vmlinux;
 
-pub fn get_a(foo: &Foo) -> i32 {
-    foo.a
-}
-
-pub fn get_b(foo: &Foo) -> i32 {
-    foo.b
-}
+use vmlinux::task_struct;
 
 #[lsm(hook = "file_open")]
 pub fn file_open(ctx: LsmContext) -> i32 {
@@ -26,11 +17,11 @@ pub fn file_open(ctx: LsmContext) -> i32 {
 }
 
 fn try_file_open(ctx: LsmContext) -> Result<i32, i32> {
-    info!(&ctx, "lsm hook file_open called");
+    let task = unsafe { ctx.arg::<*const task_struct>(0) };
 
-    let foo = Foo { a: 34, b: 75 };
-    info!(&ctx, "a: {}", get_a(&foo));
-    info!(&ctx, "b: {}", get_b(&foo));
+    if unsafe { (*task).pid == 12345 } {
+        return Err(-1);
+    }
 
     Ok(0)
 }
