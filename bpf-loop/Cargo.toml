@@ -1,0 +1,3 @@
+[workspace]
+resolver = "2"
+members = ["xtask", "bpf-loop", "bpf-loop-common"]
